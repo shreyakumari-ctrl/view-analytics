@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings – MyTube Studio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <nav class="navbar">
+            <div class="nav-left">
+                <button id="sidebar-toggle" class="icon-btn"><i class="fa-solid fa-bars"></i></button>
+                <div class="logo"><i class="fa-brands fa-youtube color-primary"></i><span>MyTube Studio</span></div>
+            </div>
+            <div class="nav-center">
+                <div class="search-bar"><i class="fa-solid fa-magnifying-glass"></i><input type="text"
+                        placeholder="Search settings…"></div>
+            </div>
+            <div class="nav-right">
+                <button id="theme-toggle" class="icon-btn"><i class="fa-regular fa-moon"></i></button>
+                <div class="notification" style="position:relative">
+                    <button id="notif-btn" class="icon-btn"><i class="fa-regular fa-bell"></i></button>
+                    <span class="badge" id="notif-badge">3</span>
+                    <div class="notif-panel" id="notif-panel">
+                        <div class="notif-header">
+                            <h4>Notifications</h4><button id="mark-all-read" class="btn-text-sm">Mark all read</button>
+                        </div>
+                        <div class="notif-list" id="notif-list"></div>
+                    </div>
+                </div>
+                <img src="https://i.pravatar.cc/150?img=47" alt="Profile" class="avatar" id="nav-avatar">
+            </div>
+        </nav>
+        <div class="main-layout">
+            <aside class="sidebar" id="sidebar">
+                <div class="nav-links">
+                    <a href="index.html" class="nav-link"><i class="fa-solid fa-house"></i><span>Dashboard</span></a>
+                    <a href="videos.html" class="nav-link"><i class="fa-solid fa-video"></i><span>Videos</span></a>
+                    <a href="videos.html?tab=shorts" class="nav-link"><i
+                            class="fa-brands fa-tiktok"></i><span>Shorts</span></a>
+                    <a href="analytics.html" class="nav-link"><i
+                            class="fa-solid fa-chart-simple"></i><span>Analytics</span></a>
+                    <a href="audience.html" class="nav-link"><i class="fa-solid fa-users"></i><span>Audience</span></a>
+                    <a href="monetization.html" class="nav-link"><i
+                            class="fa-solid fa-sack-dollar"></i><span>Monetization</span></a>
+                    <div class="divider"></div>
+                    <a href="settings.html" class="nav-link active"><i
+                            class="fa-solid fa-gear"></i><span>Settings</span></a>
+                    <a href="#" class="nav-link text-danger logout-btn"><i
+                            class="fa-solid fa-arrow-right-from-bracket"></i><span>Logout</span></a>
+                </div>
+            </aside>
+
+            <main class="content">
+                <div class="content-header">
+                    <h1>Settings</h1>
+                    <p class="text-muted">Manage your account and preferences</p>
+                </div>
+
+                <div class="settings-layout">
+
+                    <!-- Profile Card -->
+                    <div class="settings-section glass-glow">
+                        <div class="settings-section-header">
+                            <i class="fa-solid fa-user-circle" style="color:#2563eb"></i>
+                            <h3>Profile Information</h3>
+                        </div>
+                        <div class="profile-edit-row">
+                            <div class="profile-avatar-container"
+                                onclick="document.getElementById('avatar-input').click()">
+                                <img src="https://i.pravatar.cc/150?img=47" class="profile-avatar-lg"
+                                    id="profile-avatar-preview">
+                                <div class="avatar-upload-overlay">
+                                    <i class="fa-solid fa-camera"></i>
+                                </div>
+                                <input type="file" id="avatar-input" accept="image/*" style="display:none">
+                            </div>
+                            <div class="profile-fields">
+                                <div class="form-grp">
+                                    <label>Display Name</label>
+                                    <input type="text" class="form-ctrl" id="s-name" placeholder="Your name">
+                                </div>
+                                <div class="form-grp">
+                                    <label>Email</label>
+                                    <input type="email" class="form-ctrl" id="s-email" placeholder="email@example.com"
+                                        readonly>
+                                </div>
+                                <div class="form-grp">
+                                    <label>Channel Name</label>
+                                    <input type="text" class="form-ctrl" id="s-channel" placeholder="Your channel name">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="settings-actions">
+                            <button class="btn-primary" onclick="saveProfile()"><i class="fa-solid fa-save"></i> Save
+                                Changes</button>
+                        </div>
+                        <div class="settings-success" id="profile-success" style="display:none">
+                            <i class="fa-solid fa-check-circle"></i> Profile updated successfully!
+                        </div>
+                    </div>
+
+                    <!-- Preferences -->
+                    <div class="settings-section glass-glow">
+                        <div class="settings-section-header">
+                            <i class="fa-solid fa-palette" style="color:#7c3aed"></i>
+                            <h3>Appearance & Preferences</h3>
+                        </div>
+                        <div class="pref-row">
+                            <div class="pref-info">
+                                <span class="pref-label">Dark Mode</span>
+                                <span class="pref-desc">Toggle between light and dark interface</span>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="pref-dark">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="pref-row">
+                            <div class="pref-info">
+                                <span class="pref-label">Collapsed Sidebar</span>
+                                <span class="pref-desc">Show only icons in the sidebar</span>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="pref-sidebar">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="pref-row">
+                            <div class="pref-info">
+                                <span class="pref-label">Email Notifications</span>
+                                <span class="pref-desc">Receive channel updates via email</span>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="pref-notifs" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Data Management -->
+                    <div class="settings-section glass-glow">
+                        <div class="settings-section-header">
+                            <i class="fa-solid fa-database" style="color:#10b981"></i>
+                            <h3>Data Management</h3>
+                        </div>
+                        <div class="data-actions-grid">
+                            <button class="data-action-btn" onclick="exportAllData()">
+                                <i class="fa-solid fa-download"></i>
+                                <span>Export All Data</span>
+                                <small>Download JSON backup</small>
+                            </button>
+                            <button class="data-action-btn" onclick="clearNotifications()">
+                                <i class="fa-solid fa-bell-slash"></i>
+                                <span>Clear Notifications</span>
+                                <small>Mark all as read</small>
+                            </button>
+                            <button class="data-action-btn danger" onclick="confirmReset()">
+                                <i class="fa-solid fa-rotate-left"></i>
+                                <span>Reset Demo Data</span>
+                                <small>Restore seed videos</small>
+                            </button>
+                            <button class="data-action-btn danger" onclick="confirmLogout()">
+                                <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                                <span>Sign Out</span>
+                                <small>End current session</small>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Account Stats -->
+                    <div class="settings-section glass-glow">
+                        <div class="settings-section-header">
+                            <i class="fa-solid fa-circle-info" style="color:#f59e0b"></i>
+                            <h3>Account Info</h3>
+                        </div>
+                        <div class="account-info-grid" id="account-info-grid"></div>
+                    </div>
+
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="js/database.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const user = DB.getCurrentUser();
+            if (!user) return;
+            const settings = DB.getSettings();
+
+            // Populate fields
+            document.getElementById('s-name').value = user.name;
+            document.getElementById('s-email').value = user.email;
+            document.getElementById('s-channel').value = user.channel;
+
+            // Preferences
+            const darkToggle = document.getElementById('pref-dark');
+            const sidebarToggle2 = document.getElementById('pref-sidebar');
+            darkToggle.checked = settings.theme === 'dark';
+            sidebarToggle2.checked = !!settings.sidebarCollapsed;
+
+            darkToggle.addEventListener('change', () => {
+                document.body.classList.toggle('dark-mode', darkToggle.checked);
+                DB.saveSettings({ theme: darkToggle.checked ? 'dark' : 'light' });
+                const icon = document.querySelector('#theme-toggle i');
+                if (icon) { icon.classList.toggle('fa-moon', !darkToggle.checked); icon.classList.toggle('fa-sun', darkToggle.checked); }
+            });
+
+            sidebarToggle2.addEventListener('change', () => {
+                DB.saveSettings({ sidebarCollapsed: sidebarToggle2.checked });
+                const sidebar = document.getElementById('sidebar');
+                if (sidebar) sidebar.classList.toggle('collapsed', sidebarToggle2.checked);
+            });
+
+            // Account info
+            const videos = DB.getVideos(user.id);
+            const kpis = DB.calcKPIs(videos);
+            document.getElementById('account-info-grid').innerHTML = [
+                { label: 'Member Since', val: user.joinDate },
+                { label: 'Total Videos', val: videos.length },
+                { label: 'Total Views', val: DB.formatNum(kpis.totalViews) },
+                { label: 'Total Revenue', val: DB.formatCurrency(Math.floor(kpis.totalRevenue)) },
+            ].map(r => `
+        <div class="account-info-item">
+            <span class="ai-label">${r.label}</span>
+            <span class="ai-val">${r.val}</span>
+        </div>
+    `).join('');
+
+            const updateAvatarPreview = (user) => {
+                const preview = document.getElementById('profile-avatar-preview');
+                if (user.avatar) {
+                    preview.src = user.avatar;
+                }
+            };
+
+            updateAvatarPreview(user);
+
+            // Handle image upload
+            const avatarInput = document.getElementById('avatar-input');
+            avatarInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    const base64 = event.target.result;
+                    document.getElementById('profile-avatar-preview').src = base64;
+                    window.pendingAvatar = base64;
+                };
+                reader.readAsDataURL(file);
+            });
+
+            window.saveProfile = () => {
+                const name = document.getElementById('s-name').value.trim();
+                const channel = document.getElementById('s-channel').value.trim();
+                if (!name) { alert('Name cannot be empty.'); return; }
+
+                const updates = { name, channel };
+                if (window.pendingAvatar) {
+                    updates.avatar = window.pendingAvatar;
+                }
+
+                const result = DB.updateUser(user.id, updates);
+                if (result.success) {
+                    document.getElementById('nav-username').textContent = name;
+                    document.getElementById('nav-channel').textContent = channel;
+
+                    if (updates.avatar) {
+                        const navAvatar = document.getElementById('nav-avatar');
+                        if (navAvatar) navAvatar.src = updates.avatar;
+                    }
+
+                    const s = document.getElementById('profile-success');
+                    s.style.display = 'flex';
+                    setTimeout(() => s.style.display = 'none', 3000);
+                    window.pendingAvatar = null;
+                } else {
+                    alert('Error updating profile: ' + result.error);
+                }
+            };
+
+            window.exportAllData = () => {
+                const blob = new Blob([JSON.stringify({ user, videos: DB.getVideos(user.id), settings: DB.getSettings() }, null, 2)], { type: 'application/json' });
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(blob);
+                a.download = `mytube_backup_${Date.now()}.json`;
+                a.click();
+            };
+
+            window.clearNotifications = () => {
+                DB.markAllNotificationsRead();
+                const badge = document.getElementById('notif-badge');
+                if (badge) badge.style.display = 'none';
+                alert('All notifications cleared!');
+            };
+
+            window.confirmReset = () => {
+                if (confirm('This will reset all video data to the original demo data. Sure?')) {
+                    localStorage.removeItem('usersDatabase');
+                    DB.init();
+                    alert('Demo data restored! Reloading…');
+                    window.location.reload();
+                }
+            };
+
+            window.confirmLogout = () => {
+                if (confirm('Sign out of MyTube Studio?')) {
+                    DB.logoutUser();
+                    window.location.href = 'login.html';
+                }
+            };
+        });
+    </script>
+</body>
+
+</html>

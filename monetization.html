@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monetization – MyTube Studio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <nav class="navbar">
+            <div class="nav-left">
+                <button id="sidebar-toggle" class="icon-btn"><i class="fa-solid fa-bars"></i></button>
+                <div class="logo"><i class="fa-brands fa-youtube color-primary"></i><span>MyTube Studio</span></div>
+            </div>
+            <div class="nav-center">
+                <div class="search-bar"><i class="fa-solid fa-magnifying-glass"></i><input type="text"
+                        placeholder="Search…"></div>
+            </div>
+            <div class="nav-right">
+                <button id="theme-toggle" class="icon-btn"><i class="fa-regular fa-moon"></i></button>
+                <div class="notification" style="position:relative">
+                    <button id="notif-btn" class="icon-btn"><i class="fa-regular fa-bell"></i></button>
+                    <span class="badge" id="notif-badge">3</span>
+                    <div class="notif-panel" id="notif-panel">
+                        <div class="notif-header">
+                            <h4>Notifications</h4><button id="mark-all-read" class="btn-text-sm">Mark all read</button>
+                        </div>
+                        <div class="notif-list" id="notif-list"></div>
+                    </div>
+                </div>
+                <img src="https://i.pravatar.cc/150?img=47" alt="Profile" class="avatar" id="nav-avatar">
+            </div>
+        </nav>
+        <div class="main-layout">
+            <aside class="sidebar" id="sidebar">
+                <div class="nav-links">
+                    <a href="index.html" class="nav-link"><i class="fa-solid fa-house"></i><span>Dashboard</span></a>
+                    <a href="videos.html" class="nav-link"><i class="fa-solid fa-video"></i><span>Videos</span></a>
+                    <a href="videos.html?tab=shorts" class="nav-link"><i
+                            class="fa-brands fa-tiktok"></i><span>Shorts</span></a>
+                    <a href="analytics.html" class="nav-link"><i
+                            class="fa-solid fa-chart-simple"></i><span>Analytics</span></a>
+                    <a href="audience.html" class="nav-link"><i class="fa-solid fa-users"></i><span>Audience</span></a>
+                    <a href="monetization.html" class="nav-link active"><i
+                            class="fa-solid fa-sack-dollar"></i><span>Monetization</span></a>
+                    <div class="divider"></div>
+                    <a href="settings.html" class="nav-link"><i class="fa-solid fa-gear"></i><span>Settings</span></a>
+                    <a href="#" class="nav-link text-danger logout-btn"><i
+                            class="fa-solid fa-arrow-right-from-bracket"></i><span>Logout</span></a>
+                </div>
+            </aside>
+
+            <main class="content">
+                <div class="content-header page-header-flex">
+                    <h1>Monetization Dashboard</h1>
+                    <div class="header-actions">
+                        <select class="sort-select" id="time-filter">
+                            <option value="28" selected>Last 28 Days</option>
+                            <option value="90">Last 90 Days</option>
+                            <option value="365">Last Year</option>
+                            <option value="all">Lifetime</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Revenue KPIs -->
+                <div class="stats-grid" id="rev-kpis" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr))">
+                </div>
+
+                <!-- Revenue formula info -->
+                <div class="glass-glow formula-card">
+                    <div class="formula-icon"><i class="fa-solid fa-calculator"></i></div>
+                    <div>
+                        <h4>Revenue Formula</h4>
+                        <p>Revenue = (Total Views / 1000) × CPM</p>
+                    </div>
+                    <div class="formula-chip">Simulated Engine</div>
+                </div>
+
+                <!-- Charts -->
+                <div class="charts-container" style="grid-template-columns:2fr 1fr">
+                    <div class="chart-card glass-glow">
+                        <div class="chart-header">
+                            <h3>Monthly Revenue Growth</h3>
+                        </div>
+                        <div class="chart-body"><canvas id="revChart"></canvas></div>
+                    </div>
+                    <div class="chart-card glass-glow">
+                        <div class="chart-header">
+                            <h3>Revenue by Video Type</h3>
+                        </div>
+                        <div class="chart-body"><canvas id="typeRevChart"></canvas></div>
+                    </div>
+                </div>
+
+                <!-- Top earners table -->
+                <div class="section-header">
+                    <h2>Top Earning Videos</h2>
+                </div>
+                <div class="video-table-wrap glass-glow">
+                    <table class="video-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Video</th>
+                                <th>Views</th>
+                                <th>CPM (₹)</th>
+                                <th>Revenue</th>
+                                <th>Monetized</th>
+                            </tr>
+                        </thead>
+                        <tbody id="earn-tbody"></tbody>
+                    </table>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="js/database.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const user = DB.getCurrentUser();
+            if (!user) return;
+            let videos = DB.getVideos(user.id);
+            let fv = DB.filterVideosByRange(videos, '28');
+            let charts = {};
+
+            document.getElementById('time-filter')?.addEventListener('change', e => {
+                fv = DB.filterVideosByRange(videos, e.target.value);
+                renderKPIs();
+                updateCharts();
+                renderEarners();
+            });
+
+            function renderKPIs() {
+                const monetized = fv.filter(v => v.monetized);
+                const totalRev = monetized.reduce((s, v) => s + v.revenue, 0);
+                const totalViews = monetized.reduce((s, v) => s + v.views, 0);
+                const avgCPM = monetized.length ? monetized.reduce((s, v) => s + v.cpm, 0) / monetized.length : 0;
+                const RPM = totalViews > 0 ? (totalRev / totalViews) * 1000 : 0;
+                const top = monetized.sort((a, b) => b.revenue - a.revenue)[0];
+
+                document.getElementById('rev-kpis').innerHTML = [
+                    { icon: 'fa-sack-dollar', cls: 'rev-icon', label: 'Total Revenue', val: DB.formatCurrency(Math.floor(totalRev)) },
+                    { icon: 'fa-chart-line', cls: 'views-icon', label: 'RPM', val: '₹' + RPM.toFixed(2) },
+                    { icon: 'fa-bullseye', cls: 'likes-icon', label: 'Avg CPM', val: '₹' + avgCPM.toFixed(2) },
+                    { icon: 'fa-video', cls: 'subs-icon', label: 'Monetized Videos', val: monetized.length },
+                    { icon: 'fa-trophy', cls: 'time-icon', label: 'Top Earner', val: top ? top.title.slice(0, 18) + '…' : '—' },
+                ].map(c => `
+            <div class="stat-card glass-glow animate-in">
+                <div class="stat-icon ${c.cls}"><i class="fa-solid ${c.icon}"></i></div>
+                <div class="stat-details"><h3>${c.label}</h3><h2>${c.val}</h2></div>
+            </div>
+        `).join('');
+            }
+
+            function initCharts() {
+                const isDark = document.body.classList.contains('dark-mode');
+                const tc = isDark ? '#94a3b8' : '#64748b';
+                const gridC = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(100,116,139,0.1)';
+
+                const monthly = DB.getMonthlyRevenue(fv);
+                const cR = document.getElementById('revChart')?.getContext('2d');
+                if (cR) {
+                    const grad = cR.createLinearGradient(0, 0, 0, 280);
+                    grad.addColorStop(0, 'rgba(16,185,129,0.4)');
+                    grad.addColorStop(1, 'rgba(16,185,129,0)');
+                    charts.rev = new Chart(cR, {
+                        type: 'line',
+                        data: { labels: monthly.labels, datasets: [{ label: 'Revenue (₹)', data: monthly.data, borderColor: '#10b981', backgroundColor: grad, borderWidth: 2.5, fill: true, tension: 0.4, pointRadius: 3, pointHoverRadius: 6 }] },
+                        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { backgroundColor: '#1e293b', callbacks: { label: c => '₹' + c.parsed.y.toFixed(2) } } }, scales: { x: { grid: { display: false }, ticks: { color: tc } }, y: { grid: { color: gridC }, ticks: { color: tc, callback: v => '₹' + DB.formatNum(v) } } } }
+                    });
+                }
+
+                const vRev = fv.filter(v => v.type === 'video' && v.monetized).reduce((s, v) => s + v.revenue, 0);
+                const sRev = fv.filter(v => v.type === 'short' && v.monetized).reduce((s, v) => s + v.revenue, 0);
+                const cT = document.getElementById('typeRevChart')?.getContext('2d');
+                if (cT) {
+                    charts.type = new Chart(cT, {
+                        type: 'doughnut',
+                        data: { labels: ['Videos', 'Shorts'], datasets: [{ data: [vRev.toFixed(2), sRev.toFixed(2)], backgroundColor: ['#2563eb', '#f59e0b'], borderWidth: 0, hoverOffset: 8 }] },
+                        options: { responsive: true, maintainAspectRatio: false, cutout: '65%', plugins: { legend: { position: 'bottom', labels: { padding: 14, usePointStyle: true, color: tc } }, tooltip: { backgroundColor: '#1e293b', callbacks: { label: c => `₹${parseFloat(c.parsed).toFixed(2)} from ${c.label}` } } } }
+                    });
+                }
+            }
+
+            function updateCharts() {
+                const monthly = DB.getMonthlyRevenue(fv);
+                if (charts.rev) { charts.rev.data.datasets[0].data = monthly.data; charts.rev.update(); }
+                const vRev = fv.filter(v => v.type === 'video' && v.monetized).reduce((s, v) => s + v.revenue, 0);
+                const sRev = fv.filter(v => v.type === 'short' && v.monetized).reduce((s, v) => s + v.revenue, 0);
+                if (charts.type) { charts.type.data.datasets[0].data = [vRev.toFixed(2), sRev.toFixed(2)]; charts.type.update(); }
+            }
+
+            function renderEarners() {
+                const tbody = document.getElementById('earn-tbody');
+                const sorted = [...fv].filter(v => v.monetized).sort((a, b) => b.revenue - a.revenue).slice(0, 10);
+                tbody.innerHTML = sorted.map((v, i) => `
+            <tr>
+                <td><strong>#${i + 1}</strong></td>
+                <td>
+                    <div class="video-cell">
+                        <img src="${v.thumbnail}" class="table-thumb" onerror="this.src='https://via.placeholder.com/80x45'">
+                        <span class="video-title-cell">${v.title}</span>
+                    </div>
+                </td>
+                <td>${DB.formatNum(v.views)}</td>
+                <td>₹${v.cpm}</td>
+                <td><strong style="color:var(--success)">${DB.formatCurrency(Math.floor(v.revenue))}</strong></td>
+                <td><span class="badge-type video" style="background:rgba(16,185,129,0.1);color:#10b981">✓ Yes</span></td>
+            </tr>
+        `).join('');
+            }
+
+            document.addEventListener('themeChanged', ({ detail: { isDark } }) => {
+                const t = isDark ? '#94a3b8' : '#64748b';
+                const g = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(100,116,139,0.1)';
+                Object.values(charts).forEach(c => {
+                    if (c.options.scales?.x?.ticks) c.options.scales.x.ticks.color = t;
+                    if (c.options.scales?.y?.ticks) c.options.scales.y.ticks.color = t;
+                    if (c.options.scales?.y?.grid) c.options.scales.y.grid.color = g;
+                    if (c.options.plugins?.legend?.labels) c.options.plugins.legend.labels.color = t;
+                    c.update();
+                });
+            });
+
+            renderKPIs();
+            initCharts();
+            renderEarners();
+        });
+    </script>
+</body>
+
+</html>

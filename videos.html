@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Videos – MyTube Studio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <nav class="navbar">
+            <div class="nav-left">
+                <button id="sidebar-toggle" class="icon-btn"><i class="fa-solid fa-bars"></i></button>
+                <div class="logo"><i class="fa-brands fa-youtube color-primary"></i><span>MyTube Studio</span></div>
+            </div>
+            <div class="nav-center">
+                <div class="search-bar">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="video-search" placeholder="Search your videos…">
+                </div>
+            </div>
+            <div class="nav-right">
+                <button id="theme-toggle" class="icon-btn"><i class="fa-regular fa-moon"></i></button>
+                <div class="notification" style="position:relative">
+                    <button id="notif-btn" class="icon-btn"><i class="fa-regular fa-bell"></i></button>
+                    <span class="badge" id="notif-badge">3</span>
+                    <div class="notif-panel" id="notif-panel">
+                        <div class="notif-header">
+                            <h4>Notifications</h4><button id="mark-all-read" class="btn-text-sm">Mark all read</button>
+                        </div>
+                        <div class="notif-list" id="notif-list"></div>
+                    </div>
+                </div>
+                <div class="user-menu-wrap">
+                    <img src="https://i.pravatar.cc/150?img=47" alt="Profile" class="avatar" id="nav-avatar">
+                    <div class="user-tooltip"><strong id="nav-username">Loading…</strong><span id="nav-channel"></span>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <div class="main-layout">
+            <aside class="sidebar" id="sidebar">
+                <div class="nav-links">
+                    <a href="index.html" class="nav-link"><i class="fa-solid fa-house"></i><span>Dashboard</span></a>
+                    <a href="videos.html" class="nav-link"><i class="fa-solid fa-video"></i><span>Videos</span></a>
+                    <a href="videos.html?tab=shorts" class="nav-link"><i
+                            class="fa-brands fa-tiktok"></i><span>Shorts</span></a>
+                    <a href="analytics.html" class="nav-link"><i
+                            class="fa-solid fa-chart-simple"></i><span>Analytics</span></a>
+                    <a href="audience.html" class="nav-link"><i class="fa-solid fa-users"></i><span>Audience</span></a>
+                    <a href="monetization.html" class="nav-link"><i
+                            class="fa-solid fa-sack-dollar"></i><span>Monetization</span></a>
+                    <div class="divider"></div>
+                    <a href="settings.html" class="nav-link"><i class="fa-solid fa-gear"></i><span>Settings</span></a>
+                    <a href="#" class="nav-link text-danger logout-btn"><i
+                            class="fa-solid fa-arrow-right-from-bracket"></i><span>Logout</span></a>
+                </div>
+            </aside>
+
+            <main class="content">
+                <div class="content-header page-header-flex">
+                    <div>
+                        <h1 id="page-title">My Videos</h1>
+                        <p class="text-muted" id="video-count-label">Loading…</p>
+                    </div>
+                    <div class="header-actions">
+                        <select class="sort-select" id="sort-select">
+                            <option value="date">Newest First</option>
+                            <option value="views">Most Viewed</option>
+                            <option value="revenue">Top Revenue</option>
+                            <option value="likes">Most Liked</option>
+                        </select>
+                        <button class="btn-primary" id="add-video-btn" onclick="openVideoModal()">
+                            <i class="fa-solid fa-plus"></i> Upload Video
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Filter Tabs -->
+                <div class="filter-tabs" id="filter-tabs">
+                    <button class="filter-tab active" data-filter="all">All <span class="tab-count"
+                            id="count-all"></span></button>
+                    <button class="filter-tab" data-filter="video">Videos <span class="tab-count"
+                            id="count-video"></span></button>
+                    <button class="filter-tab" data-filter="short">Shorts <span class="tab-count"
+                            id="count-short"></span></button>
+                    <button class="filter-tab" data-filter="public">Public <span class="tab-count"
+                            id="count-public"></span></button>
+                    <button class="filter-tab" data-filter="private">Private <span class="tab-count"
+                            id="count-private"></span></button>
+                </div>
+
+                <!-- Compare strip -->
+                <div class="compare-strip" id="compare-strip" style="display:none">
+                    <span>Compare Mode: <strong id="compare-count">0</strong> selected</span>
+                    <button class="btn-primary btn-sm" onclick="runCompare()"><i class="fa-solid fa-chart-bar"></i>
+                        Compare</button>
+                    <button class="btn-sm-outline" onclick="clearCompare()">Clear</button>
+                </div>
+
+                <!-- Video table -->
+                <div class="video-table-wrap glass-glow">
+                    <table class="video-table" id="video-table">
+                        <thead>
+                            <tr>
+                                <th style="width:32px"><input type="checkbox" id="check-all" title="Select all"></th>
+                                <th>Video</th>
+                                <th>Type</th>
+                                <th>Views</th>
+                                <th>Likes</th>
+                                <th>Revenue</th>
+                                <th>Visibility</th>
+                                <th>Uploaded</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="video-tbody">
+                            <tr>
+                                <td colspan="9" style="text-align:center;padding:40px">
+                                    <div class="skeleton sk-rect" style="height:20px;max-width:300px;margin:0 auto">
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <!-- Pagination -->
+                    <div class="pagination" id="pagination"></div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- ░░ Add / Edit Modal ░░ -->
+    <div class="modal-overlay" id="video-modal" style="display:none">
+        <div class="modal glass-glow">
+            <div class="modal-header">
+                <h3 id="modal-title">Upload New Video</h3>
+                <button class="icon-btn" onclick="closeVideoModal()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="modal-video-id">
+                <div class="form-grid-2">
+                    <div class="form-grp">
+                        <label>Title *</label>
+                        <input type="text" class="form-ctrl" id="m-title" placeholder="Video title">
+                    </div>
+                    <div class="form-grp">
+                        <label>Type</label>
+                        <select class="form-ctrl" id="m-type">
+                            <option value="video">Video</option>
+                            <option value="short">Short</option>
+                        </select>
+                    </div>
+                    <div class="form-grp">
+                        <label>Views</label>
+                        <input type="number" class="form-ctrl" id="m-views" placeholder="0">
+                    </div>
+                    <div class="form-grp">
+                        <label>Likes</label>
+                        <input type="number" class="form-ctrl" id="m-likes" placeholder="0">
+                    </div>
+                    <div class="form-grp">
+                        <label>Comments</label>
+                        <input type="number" class="form-ctrl" id="m-comments" placeholder="0">
+                    </div>
+                    <div class="form-grp">
+                        <label>Shares</label>
+                        <input type="number" class="form-ctrl" id="m-shares" placeholder="0">
+                    </div>
+                    <div class="form-grp">
+                        <label>Impressions</label>
+                        <input type="number" class="form-ctrl" id="m-impressions" placeholder="0">
+                    </div>
+                    <div class="form-grp">
+                        <label>Watch Time (min)</label>
+                        <input type="number" class="form-ctrl" id="m-watchtime" placeholder="0">
+                    </div>
+                    <div class="form-grp">
+                        <label>Avg View Duration (min)</label>
+                        <input type="number" step="0.1" class="form-ctrl" id="m-avd" placeholder="0.0">
+                    </div>
+                    <div class="form-grp">
+                        <label>CPM (₹)</label>
+                        <input type="number" step="0.1" class="form-ctrl" id="m-cpm" placeholder="3.5">
+                    </div>
+                    <div class="form-grp">
+                        <label>Upload Date</label>
+                        <input type="date" class="form-ctrl" id="m-date">
+                    </div>
+                    <div class="form-grp">
+                        <label>Visibility</label>
+                        <select class="form-ctrl" id="m-visibility">
+                            <option value="public">Public</option>
+                            <option value="private">Private</option>
+                        </select>
+                    </div>
+                    <div class="form-grp" style="grid-column:1/-1">
+                        <label>Thumbnail URL</label>
+                        <input type="url" class="form-ctrl" id="m-thumbnail" placeholder="https://…">
+                    </div>
+                </div>
+                <div class="modal-toggle-row">
+                    <label class="toggle-label">
+                        <span>Monetized</span>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="m-monetized" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-sm-outline" onclick="closeVideoModal()">Cancel</button>
+                <button class="btn-primary" onclick="saveVideo()">Save Video</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ░░ Compare Modal ░░ -->
+    <div class="modal-overlay" id="compare-modal" style="display:none">
+        <div class="modal modal-lg glass-glow">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-chart-bar"></i> Comparing Videos</h3>
+                <button class="icon-btn" onclick="document.getElementById('compare-modal').style.display='none'"><i
+                        class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body" id="compare-body"></div>
+        </div>
+    </div>
+
+    <script src="js/database.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        'use strict';
+        document.addEventListener('DOMContentLoaded', () => {
+            const user = DB.getCurrentUser();
+            if (!user) return;
+
+            let allVideos = DB.getVideos(user.id);
+            let displayVideos = [];
+            let currentFilter = 'all';
+            let currentSort = 'date';
+            let currentPage = 1;
+            let currentSearch = '';
+            const PAGE_SIZE = 10;
+            let compareSelection = [];
+
+            // Cache search input element
+            const searchInput = document.getElementById('video-search');
+
+            // Check tab from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('tab') === 'shorts') {
+                currentFilter = 'short';
+                document.getElementById('page-title').textContent = 'My Shorts';
+            }
+
+            // Check search from URL
+            const searchParam = urlParams.get('search');
+            if (searchParam) {
+                currentSearch = searchParam;
+                if (searchInput) searchInput.value = searchParam;
+            }
+
+            function applyFilter() {
+                let v = [...allVideos];
+                if (currentFilter === 'video') v = v.filter(x => x.type === 'video');
+                else if (currentFilter === 'short') v = v.filter(x => x.type === 'short');
+                else if (currentFilter === 'public') v = v.filter(x => x.visibility === 'public');
+                else if (currentFilter === 'private') v = v.filter(x => x.visibility === 'private');
+
+                const q = currentSearch.trim().toLowerCase();
+                if (q) {
+                    v = v.filter(x =>
+                        x.title.toLowerCase().includes(q) ||
+                        x.type.toLowerCase().includes(q) ||
+                        x.visibility.toLowerCase().includes(q) ||
+                        x.uploadDate.includes(q)
+                    );
+                }
+
+                if (currentSort === 'date') v.sort((a, b) => new Date(b.uploadDate) - new Date(a.uploadDate));
+                else if (currentSort === 'views') v.sort((a, b) => b.views - a.views);
+                else if (currentSort === 'revenue') v.sort((a, b) => b.revenue - a.revenue);
+                else if (currentSort === 'likes') v.sort((a, b) => b.likes - a.likes);
+
+                displayVideos = v;
+                currentPage = 1;
+                updateCounts();
+                renderTable();
+                renderPagination();
+            }
+
+            function updateCounts() {
+                document.getElementById('video-count-label').textContent = `${displayVideos.length} item${displayVideos.length !== 1 ? 's' : ''}`;
+                document.getElementById('count-all').textContent = allVideos.length;
+                document.getElementById('count-video').textContent = allVideos.filter(v => v.type === 'video').length;
+                document.getElementById('count-short').textContent = allVideos.filter(v => v.type === 'short').length;
+                document.getElementById('count-public').textContent = allVideos.filter(v => v.visibility === 'public').length;
+                document.getElementById('count-private').textContent = allVideos.filter(v => v.visibility === 'private').length;
+            }
+
+            function renderTable() {
+                const tbody = document.getElementById('video-tbody');
+                const start = (currentPage - 1) * PAGE_SIZE;
+                const pageVideos = displayVideos.slice(start, start + PAGE_SIZE);
+                if (!pageVideos.length) {
+                    tbody.innerHTML = '<tr><td colspan="9" class="empty-row"><div class="empty-state"><i class="fa-solid fa-video-slash"></i><p>No videos found.</p></div></td></tr>';
+                    return;
+                }
+                tbody.innerHTML = pageVideos.map(v => `
+            <tr class="video-row" data-id="${v.id}">
+                <td><input type="checkbox" class="compare-cb" data-id="${v.id}" ${compareSelection.includes(v.id) ? 'checked' : ''}></td>
+                <td>
+                    <div class="video-cell">
+                        <img src="${v.thumbnail}" alt="${v.title}" class="table-thumb" onerror="this.src='https://via.placeholder.com/80x45'">
+                        <span class="video-title-cell">${v.title}</span>
+                    </div>
+                </td>
+                <td><span class="badge-type ${v.type}">${v.type === 'short' ? '#Short' : '▶ Video'}</span></td>
+                <td>${DB.formatNum(v.views)}</td>
+                <td>${DB.formatNum(v.likes)}</td>
+                <td>${v.monetized ? DB.formatCurrency(Math.floor(v.revenue)) : '<span class="text-muted">—</span>'}</td>
+                <td>
+                    <button class="visibility-btn ${v.visibility}" onclick="toggleVisibility('${v.id}')">
+                        <i class="fa-solid ${v.visibility === 'public' ? 'fa-globe' : 'fa-lock'}"></i>
+                        ${v.visibility === 'public' ? 'Public' : 'Private'}
+                    </button>
+                </td>
+                <td>${v.uploadDate}</td>
+                <td>
+                    <div class="action-btns">
+                        <button class="icon-btn" onclick="editVideo('${v.id}')" title="Edit"><i class="fa-solid fa-pen"></i></button>
+                        <button class="icon-btn text-danger" onclick="deleteVideo('${v.id}')" title="Delete"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                </td>
+            </tr>
+        `).join('');
+
+                // Compare checkboxes
+                tbody.querySelectorAll('.compare-cb').forEach(cb => {
+                    cb.addEventListener('change', () => {
+                        const id = cb.dataset.id;
+                        if (cb.checked) {
+                            if (compareSelection.length >= 2) { cb.checked = false; alert('Maximum 2 videos for comparison.'); return; }
+                            compareSelection.push(id);
+                        } else {
+                            compareSelection = compareSelection.filter(x => x !== id);
+                        }
+                        const strip = document.getElementById('compare-strip');
+                        document.getElementById('compare-count').textContent = compareSelection.length;
+                        strip.style.display = compareSelection.length > 0 ? 'flex' : 'none';
+                    });
+                });
+            }
+
+            function renderPagination() {
+                const total = Math.ceil(displayVideos.length / PAGE_SIZE);
+                const pg = document.getElementById('pagination');
+                if (total <= 1) { pg.innerHTML = ''; return; }
+                pg.innerHTML = Array.from({ length: total }, (_, i) => `
+            <button class="page-btn ${i + 1 === currentPage ? 'active' : ''}" onclick="goPage(${i + 1})">${i + 1}</button>
+        `).join('');
+            }
+
+            window.goPage = (n) => { currentPage = n; renderTable(); renderPagination(); };
+
+            // Filter tabs
+            document.getElementById('filter-tabs')?.addEventListener('click', e => {
+                const btn = e.target.closest('.filter-tab');
+                if (!btn) return;
+                document.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentFilter = btn.dataset.filter;
+                applyFilter();
+            });
+
+            // Set initial active filter tab
+            if (currentFilter === 'short') {
+                document.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
+                document.querySelector('[data-filter="short"]')?.classList.add('active');
+            }
+
+            document.getElementById('sort-select')?.addEventListener('change', e => {
+                currentSort = e.target.value;
+                applyFilter();
+            });
+
+            // Search bar — listen on both 'input' and 'keyup' for full coverage
+            if (searchInput) {
+                searchInput.addEventListener('input', (e) => {
+                    currentSearch = e.target.value;
+                    applyFilter();
+                });
+                searchInput.addEventListener('keyup', (e) => {
+                    currentSearch = e.target.value;
+                    applyFilter();
+                });
+            }
+
+            document.getElementById('check-all')?.addEventListener('change', e => {
+                document.querySelectorAll('.compare-cb').forEach(cb => { cb.checked = e.target.checked; });
+            });
+
+            // ── Video Modal ───────────────────────────────────────────────
+            window.openVideoModal = (id) => {
+                const modal = document.getElementById('video-modal');
+                document.getElementById('modal-title').textContent = id ? 'Edit Video' : 'Upload New Video';
+                document.getElementById('modal-video-id').value = id || '';
+
+                if (id) {
+                    const v = allVideos.find(x => x.id === id);
+                    if (v) {
+                        document.getElementById('m-title').value = v.title;
+                        document.getElementById('m-type').value = v.type;
+                        document.getElementById('m-views').value = v.views;
+                        document.getElementById('m-likes').value = v.likes;
+                        document.getElementById('m-comments').value = v.comments;
+                        document.getElementById('m-shares').value = v.shares;
+                        document.getElementById('m-impressions').value = v.impressions;
+                        document.getElementById('m-watchtime').value = v.watchTime;
+                        document.getElementById('m-avd').value = v.avgViewDuration;
+                        document.getElementById('m-cpm').value = v.cpm;
+                        document.getElementById('m-date').value = v.uploadDate;
+                        document.getElementById('m-visibility').value = v.visibility;
+                        document.getElementById('m-thumbnail').value = v.thumbnail || '';
+                        document.getElementById('m-monetized').checked = v.monetized;
+                    }
+                } else {
+                    document.getElementById('m-date').value = new Date().toISOString().split('T')[0];
+                    document.getElementById('m-cpm').value = '3.5';
+                }
+
+                modal.style.display = 'flex';
+                setTimeout(() => modal.querySelector('.modal').classList.add('modal-open'), 10);
+            };
+
+            window.closeVideoModal = () => {
+                const modal = document.getElementById('video-modal');
+                modal.querySelector('.modal').classList.remove('modal-open');
+                setTimeout(() => { modal.style.display = 'none'; }, 250);
+                // Reset
+                ['m-title', 'm-type', 'm-views', 'm-likes', 'm-comments', 'm-shares', 'm-impressions', 'm-watchtime', 'm-avd', 'm-cpm', 'm-date', 'm-visibility', 'm-thumbnail'].forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) el.value = el.tagName === 'SELECT' ? el.options[0].value : '';
+                });
+                document.getElementById('m-monetized').checked = true;
+            };
+
+            window.saveVideo = () => {
+                const title = document.getElementById('m-title').value.trim();
+                if (!title) { alert('Title is required!'); return; }
+
+                const views = parseInt(document.getElementById('m-views').value) || 0;
+                const cpm = parseFloat(document.getElementById('m-cpm').value) || 3.5;
+                const id = document.getElementById('modal-video-id').value;
+
+                const data = {
+                    title,
+                    type: document.getElementById('m-type').value,
+                    views,
+                    likes: parseInt(document.getElementById('m-likes').value) || 0,
+                    comments: parseInt(document.getElementById('m-comments').value) || 0,
+                    shares: parseInt(document.getElementById('m-shares').value) || 0,
+                    impressions: parseInt(document.getElementById('m-impressions').value) || 0,
+                    watchTime: parseInt(document.getElementById('m-watchtime').value) || 0,
+                    avgViewDuration: parseFloat(document.getElementById('m-avd').value) || 0,
+                    cpm,
+                    revenue: parseFloat(((views / 1000) * cpm).toFixed(2)),
+                    uploadDate: document.getElementById('m-date').value || new Date().toISOString().split('T')[0],
+                    visibility: document.getElementById('m-visibility').value,
+                    thumbnail: document.getElementById('m-thumbnail').value || 'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=400&auto=format&fit=crop',
+                    monetized: document.getElementById('m-monetized').checked,
+                };
+
+                if (id) {
+                    DB.updateVideo(user.id, id, data);
+                } else {
+                    DB.addVideo(user.id, data);
+                }
+
+                allVideos = DB.getVideos(user.id);
+                closeVideoModal();
+                applyFilter();
+            };
+
+            window.editVideo = (id) => openVideoModal(id);
+
+            window.deleteVideo = (id) => {
+                if (!confirm('Delete this video? This cannot be undone.')) return;
+                DB.deleteVideo(user.id, id);
+                allVideos = DB.getVideos(user.id);
+                compareSelection = compareSelection.filter(x => x !== id);
+                applyFilter();
+            };
+
+            window.toggleVisibility = (id) => {
+                const v = allVideos.find(x => x.id === id);
+                if (!v) return;
+                DB.updateVideo(user.id, id, { visibility: v.visibility === 'public' ? 'private' : 'public' });
+                allVideos = DB.getVideos(user.id);
+                applyFilter();
+            };
+
+            // ── Compare ──────────────────────────────────────────────────
+            window.clearCompare = () => {
+                compareSelection = [];
+                document.getElementById('compare-strip').style.display = 'none';
+                document.querySelectorAll('.compare-cb').forEach(cb => cb.checked = false);
+            };
+
+            window.runCompare = () => {
+                if (compareSelection.length < 2) { alert('Select 2 videos to compare.'); return; }
+                const [v1, v2] = compareSelection.map(id => allVideos.find(v => v.id === id));
+                const fields = [
+                    ['Views', 'views', v => DB.formatNum(v)],
+                    ['Likes', 'likes', v => DB.formatNum(v)],
+                    ['Comments', 'comments', v => DB.formatNum(v)],
+                    ['Revenue', 'revenue', v => DB.formatCurrency(Math.floor(v))],
+                    ['Watch Time (min)', 'watchTime', v => DB.formatNum(v)],
+                    ['Avg Duration', 'avgViewDuration', v => v + ' min'],
+                    ['CPM', 'cpm', v => '₹' + v],
+                ];
+                const body = document.getElementById('compare-body');
+                body.innerHTML = `
+            <div class="compare-grid">
+                <div class="compare-col">
+                    <img src="${v1.thumbnail}" class="compare-thumb" onerror="this.src='https://via.placeholder.com/200x112'">
+                    <h4>${v1.title}</h4>
+                </div>
+                <div class="compare-vs">VS</div>
+                <div class="compare-col">
+                    <img src="${v2.thumbnail}" class="compare-thumb" onerror="this.src='https://via.placeholder.com/200x112'">
+                    <h4>${v2.title}</h4>
+                </div>
+            </div>
+            <table class="compare-table">
+                <tbody>
+                    ${fields.map(([label, key, fmt]) => {
+                    const win = v1[key] >= v2[key] ? 1 : 2;
+                    return `
+                        <tr>
+                            <td class="${win === 1 ? 'winner' : ''}">${fmt(v1[key])}</td>
+                            <td class="compare-label">${label}</td>
+                            <td class="${win === 2 ? 'winner' : ''}">${fmt(v2[key])}</td>
+                        </tr>`;
+                }).join('')}
+                </tbody>
+            </table>
+        `;
+                document.getElementById('compare-modal').style.display = 'flex';
+            };
+
+            // Close modal on overlay click
+            document.getElementById('video-modal')?.addEventListener('click', e => {
+                if (e.target.id === 'video-modal') closeVideoModal();
+            });
+            document.getElementById('compare-modal')?.addEventListener('click', e => {
+                if (e.target.id === 'compare-modal') e.target.style.display = 'none';
+            });
+
+            applyFilter();
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard – MyTube Studio</title>
+    <meta name="description" content="Creator analytics dashboard – track views, revenue, subscribers in real time.">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <div class="app-container">
+
+        <!-- ░░ NAVBAR ░░ -->
+        <nav class="navbar">
+            <div class="nav-left">
+                <button id="sidebar-toggle" class="icon-btn" aria-label="Toggle sidebar">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <div class="logo">
+                    <i class="fa-brands fa-youtube color-primary"></i>
+                    <span>MyTube Studio</span>
+                </div>
+            </div>
+            <div class="nav-center">
+                <div class="search-bar">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="global-search" placeholder="Search videos, analytics…">
+                </div>
+            </div>
+            <div class="nav-right">
+                <button id="theme-toggle" class="icon-btn" aria-label="Toggle theme">
+                    <i class="fa-regular fa-moon"></i>
+                </button>
+                <div class="notification" style="position:relative">
+                    <button id="notif-btn" class="icon-btn" aria-label="Notifications">
+                        <i class="fa-regular fa-bell"></i>
+                    </button>
+                    <span class="badge" id="notif-badge">3</span>
+                    <!-- Notification Panel -->
+                    <div class="notif-panel" id="notif-panel">
+                        <div class="notif-header">
+                            <h4>Notifications</h4>
+                            <button id="mark-all-read" class="btn-text-sm">Mark all read</button>
+                        </div>
+                        <div class="notif-list" id="notif-list"></div>
+                    </div>
+                </div>
+                <div class="user-menu-wrap">
+                    <img src="https://i.pravatar.cc/150?img=47" alt="Profile" class="avatar" id="nav-avatar">
+                    <div class="user-tooltip">
+                        <strong id="nav-username">Loading…</strong>
+                        <span id="nav-channel"></span>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <div class="main-layout">
+            <!-- ░░ SIDEBAR ░░ -->
+            <aside class="sidebar" id="sidebar">
+                <div class="nav-links">
+                    <a href="index.html" class="nav-link active">
+                        <i class="fa-solid fa-house"></i><span>Dashboard</span>
+                    </a>
+                    <a href="videos.html" class="nav-link">
+                        <i class="fa-solid fa-video"></i><span>Videos</span>
+                    </a>
+                    <a href="videos.html?tab=shorts" class="nav-link">
+                        <i class="fa-brands fa-tiktok"></i><span>Shorts</span>
+                    </a>
+                    <a href="analytics.html" class="nav-link">
+                        <i class="fa-solid fa-chart-simple"></i><span>Analytics</span>
+                    </a>
+                    <a href="audience.html" class="nav-link">
+                        <i class="fa-solid fa-users"></i><span>Audience</span>
+                    </a>
+                    <a href="monetization.html" class="nav-link">
+                        <i class="fa-solid fa-sack-dollar"></i><span>Monetization</span>
+                    </a>
+                    <div class="divider"></div>
+                    <a href="settings.html" class="nav-link">
+                        <i class="fa-solid fa-gear"></i><span>Settings</span>
+                    </a>
+                    <a href="#" class="nav-link text-danger logout-btn">
+                        <i class="fa-solid fa-arrow-right-from-bracket"></i><span>Logout</span>
+                    </a>
+                </div>
+            </aside>
+
+            <!-- ░░ CONTENT ░░ -->
+            <main class="content" id="main-content">
+
+                <!-- Header -->
+                <div class="content-header page-header-flex">
+                    <div>
+                        <h1 id="dashboard-greeting">Channel Dashboard</h1>
+                        <p class="text-muted" id="dashboard-date"></p>
+                    </div>
+                    <div class="header-actions">
+                        <select class="sort-select" id="time-filter">
+                            <option value="7">Last 7 Days</option>
+                            <option value="28" selected>Last 28 Days</option>
+                            <option value="90">Last 90 Days</option>
+                            <option value="365">Last 365 Days</option>
+                            <option value="all">Lifetime</option>
+                        </select>
+                        <button class="btn-primary" id="export-btn">
+                            <i class="fa-solid fa-download"></i> Export
+                        </button>
+                    </div>
+                </div>
+
+                <!-- KPI Cards (skeleton shown initially) -->
+                <div class="stats-grid" id="kpi-grid">
+                    <div class="stat-card glass-glow skeleton-card">
+                        <div class="skeleton sk-rect"></div>
+                    </div>
+                    <div class="stat-card glass-glow skeleton-card">
+                        <div class="skeleton sk-rect"></div>
+                    </div>
+                    <div class="stat-card glass-glow skeleton-card">
+                        <div class="skeleton sk-rect"></div>
+                    </div>
+                    <div class="stat-card glass-glow skeleton-card">
+                        <div class="skeleton sk-rect"></div>
+                    </div>
+                    <div class="stat-card glass-glow skeleton-card">
+                        <div class="skeleton sk-rect"></div>
+                    </div>
+                </div>
+
+                <!-- Charts row -->
+                <div class="charts-container">
+                    <div class="chart-card glass-glow">
+                        <div class="chart-header">
+                            <h3>Views Growth</h3>
+                            <button class="icon-btn"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+                        </div>
+                        <div class="chart-body">
+                            <canvas id="viewsChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="chart-card glass-glow">
+                        <div class="chart-header">
+                            <h3>Traffic Sources</h3>
+                            <button class="icon-btn"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+                        </div>
+                        <div class="chart-body">
+                            <canvas id="trafficChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Insights -->
+                <div class="performance-insights" id="insights-row">
+                    <!-- Populated by JS -->
+                </div>
+
+                <!-- Recent Videos -->
+                <div class="section-header">
+                    <h2>Recent Videos</h2>
+                    <a href="videos.html" class="btn-link">View all <i class="fa-solid fa-chevron-right"></i></a>
+                </div>
+                <div class="recent-videos-list" id="recent-videos">
+                    <!-- Populated by JS -->
+                </div>
+
+                <!-- Activity Log -->
+                <div class="section-header" style="margin-top:32px">
+                    <h2>Recent Activity</h2>
+                </div>
+                <div class="activity-log glass-glow" id="activity-list">
+                    <!-- Populated by JS -->
+                </div>
+
+            </main>
+        </div>
+    </div>
+
+    <script src="js/database.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/dashboard.js"></script>
+</body>
+
+</html>

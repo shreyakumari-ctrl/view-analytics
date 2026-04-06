@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics – MyTube Studio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <nav class="navbar">
+            <div class="nav-left">
+                <button id="sidebar-toggle" class="icon-btn"><i class="fa-solid fa-bars"></i></button>
+                <div class="logo"><i class="fa-brands fa-youtube color-primary"></i><span>MyTube Studio</span></div>
+            </div>
+            <div class="nav-center">
+                <div class="search-bar">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" placeholder="Search analytics…">
+                </div>
+            </div>
+            <div class="nav-right">
+                <button id="theme-toggle" class="icon-btn"><i class="fa-regular fa-moon"></i></button>
+                <div class="notification" style="position:relative">
+                    <button id="notif-btn" class="icon-btn"><i class="fa-regular fa-bell"></i></button>
+                    <span class="badge" id="notif-badge">3</span>
+                    <div class="notif-panel" id="notif-panel">
+                        <div class="notif-header">
+                            <h4>Notifications</h4><button id="mark-all-read" class="btn-text-sm">Mark all read</button>
+                        </div>
+                        <div class="notif-list" id="notif-list"></div>
+                    </div>
+                </div>
+                <img src="https://i.pravatar.cc/150?img=47" alt="Profile" class="avatar" id="nav-avatar">
+            </div>
+        </nav>
+
+        <div class="main-layout">
+            <aside class="sidebar" id="sidebar">
+                <div class="nav-links">
+                    <a href="index.html" class="nav-link"><i class="fa-solid fa-house"></i><span>Dashboard</span></a>
+                    <a href="videos.html" class="nav-link"><i class="fa-solid fa-video"></i><span>Videos</span></a>
+                    <a href="videos.html?tab=shorts" class="nav-link"><i
+                            class="fa-brands fa-tiktok"></i><span>Shorts</span></a>
+                    <a href="analytics.html" class="nav-link active"><i
+                            class="fa-solid fa-chart-simple"></i><span>Analytics</span></a>
+                    <a href="audience.html" class="nav-link"><i class="fa-solid fa-users"></i><span>Audience</span></a>
+                    <a href="monetization.html" class="nav-link"><i
+                            class="fa-solid fa-sack-dollar"></i><span>Monetization</span></a>
+                    <div class="divider"></div>
+                    <a href="settings.html" class="nav-link"><i class="fa-solid fa-gear"></i><span>Settings</span></a>
+                    <a href="#" class="nav-link text-danger logout-btn"><i
+                            class="fa-solid fa-arrow-right-from-bracket"></i><span>Logout</span></a>
+                </div>
+            </aside>
+
+            <main class="content">
+                <div class="content-header page-header-flex">
+                    <h1>Channel Analytics</h1>
+                    <div class="header-actions">
+                        <select class="sort-select" id="time-filter">
+                            <option value="7">Last 7 Days</option>
+                            <option value="28" selected>Last 28 Days</option>
+                            <option value="90">Last 90 Days</option>
+                            <option value="365">Last 365 Days</option>
+                            <option value="all">Lifetime</option>
+                        </select>
+                        <button class="btn-primary" id="export-btn">
+                            <i class="fa-solid fa-download"></i> Export
+                        </button>
+                    </div>
+                </div>
+
+                <!-- KPI overview tabs -->
+                <div class="analytics-overview glass-glow" id="analytics-tabs">
+                    <div class="analytics-tab active" data-key="views">
+                        <div class="tab-title">Views</div>
+                        <div class="tab-value" id="kpi-views">—</div>
+                        <div class="tab-growth positive" id="kpi-views-g"><i class="fa-solid fa-arrow-up"></i> +12% vs
+                            prev</div>
+                    </div>
+                    <div class="analytics-tab" data-key="watchTime">
+                        <div class="tab-title">Watch Time (hrs)</div>
+                        <div class="tab-value" id="kpi-wt">—</div>
+                        <div class="tab-growth positive" id="kpi-wt-g"><i class="fa-solid fa-arrow-up"></i> +8% vs prev
+                        </div>
+                    </div>
+                    <div class="analytics-tab" data-key="likes">
+                        <div class="tab-title">Likes</div>
+                        <div class="tab-value" id="kpi-likes">—</div>
+                        <div class="tab-growth positive"><i class="fa-solid fa-arrow-up"></i> +5%</div>
+                    </div>
+                    <div class="analytics-tab" data-key="revenue">
+                        <div class="tab-title">Revenue</div>
+                        <div class="tab-value" id="kpi-rev">—</div>
+                        <div class="tab-growth positive"><i class="fa-solid fa-arrow-up"></i> +10%</div>
+                    </div>
+                    <div class="analytics-tab" data-key="engagement">
+                        <div class="tab-title">Engagement Rate</div>
+                        <div class="tab-value" id="kpi-eng">—</div>
+                        <div class="tab-growth positive"><i class="fa-solid fa-arrow-up"></i></div>
+                    </div>
+                </div>
+
+                <!-- Charts -->
+                <div class="charts-container">
+                    <div class="chart-card glass-glow">
+                        <div class="chart-header">
+                            <h3>Views Over Time</h3>
+                            <button class="icon-btn"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+                        </div>
+                        <div class="chart-body"><canvas id="growthChart"></canvas></div>
+                    </div>
+                    <div class="chart-card glass-glow">
+                        <div class="chart-header">
+                            <h3>Traffic Sources</h3>
+                            <button class="icon-btn"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+                        </div>
+                        <div class="chart-body"><canvas id="trafficChart"></canvas></div>
+                    </div>
+                </div>
+
+                <!-- Bar chart row -->
+                <div class="charts-container" style="margin-bottom:24px">
+                    <div class="chart-card glass-glow">
+                        <div class="chart-header">
+                            <h3>Top 5 Videos by Views</h3>
+                            <button class="icon-btn"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+                        </div>
+                        <div class="chart-body"><canvas id="barChart"></canvas></div>
+                    </div>
+                    <div class="chart-card glass-glow">
+                        <div class="chart-header">
+                            <h3>Engagement Breakdown</h3>
+                            <button class="icon-btn"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+                        </div>
+                        <div class="chart-body"><canvas id="engChart"></canvas></div>
+                    </div>
+                </div>
+
+                <!-- Insights -->
+                <div class="performance-insights" id="perf-insights"></div>
+
+                <!-- Retention -->
+                <div class="glass-glow" style="padding:24px;margin-bottom:24px">
+                    <h3 style="margin-bottom:20px">📌 Retention Analysis</h3>
+                    <div class="retention-grid" id="retention-grid"></div>
+                </div>
+
+            </main>
+        </div>
+    </div>
+
+    <script src="js/database.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const user = DB.getCurrentUser();
+            if (!user) return;
+            let videos = DB.getVideos(user.id);
+            let fv = DB.filterVideosByRange(videos, '28');
+            let charts = {};
+
+            const tf = document.getElementById('time-filter');
+            tf?.addEventListener('change', () => { fv = DB.filterVideosByRange(videos, tf.value); refresh(); });
+
+            function refresh() {
+                renderKPIs();
+                updateCharts();
+                renderInsights();
+                renderRetention();
+            }
+
+            function renderKPIs() {
+                const k = DB.calcKPIs(fv);
+                document.getElementById('kpi-views').textContent = DB.formatNum(k.totalViews);
+                document.getElementById('kpi-wt').textContent = DB.formatNum(Math.floor(k.totalWatchTime / 60));
+                document.getElementById('kpi-likes').textContent = DB.formatNum(k.totalLikes);
+                document.getElementById('kpi-rev').textContent = DB.formatCurrency(Math.floor(k.totalRevenue));
+                document.getElementById('kpi-eng').textContent = k.engagementRate + '%';
+            }
+
+            function initCharts() {
+                const isDark = document.body.classList.contains('dark-mode');
+                const gridC = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(100,116,139,0.1)';
+                const tickC = isDark ? '#94a3b8' : '#64748b';
+                Chart.defaults.font.family = "'Poppins', sans-serif";
+                Chart.defaults.color = tickC;
+
+                // Line chart
+                const cG = document.getElementById('growthChart')?.getContext('2d');
+                if (cG) {
+                    const days = parseInt(tf?.value) || 28;
+                    const { labels, data } = DB.getViewsOverTime(fv, Math.min(days, 30));
+                    const grad = cG.createLinearGradient(0, 0, 0, 280);
+                    grad.addColorStop(0, 'rgba(37,99,235,0.4)');
+                    grad.addColorStop(1, 'rgba(37,99,235,0)');
+                    charts.growth = new Chart(cG, {
+                        type: 'line',
+                        data: { labels, datasets: [{ label: 'Views', data, borderColor: '#2563eb', backgroundColor: grad, borderWidth: 2.5, fill: true, tension: 0.4, pointRadius: 3, pointHoverRadius: 6 }] },
+                        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { backgroundColor: '#1e293b', padding: 12, displayColors: false, callbacks: { label: c => DB.formatNum(c.parsed.y) + ' views' } } }, scales: { x: { grid: { display: false }, ticks: { color: tickC, maxTicksLimit: 7 } }, y: { grid: { color: gridC }, ticks: { color: tickC, callback: v => DB.formatNum(v) } } } }
+                    });
+                }
+
+                // Traffic pie
+                const cT = document.getElementById('trafficChart')?.getContext('2d');
+                if (cT) {
+                    const t = DB.getTrafficAggregates(fv);
+                    charts.traffic = new Chart(cT, {
+                        type: 'doughnut',
+                        data: { labels: ['Search', 'Suggested', 'Direct', 'External'], datasets: [{ data: [t.search, t.suggested, t.direct, t.external], backgroundColor: ['#2563eb', '#7c3aed', '#10b981', '#f59e0b'], borderWidth: 0, hoverOffset: 8 }] },
+                        options: { responsive: true, maintainAspectRatio: false, cutout: '65%', plugins: { legend: { position: 'bottom', labels: { padding: 14, usePointStyle: true, color: tickC } }, tooltip: { backgroundColor: '#1e293b', padding: 12, callbacks: { label: c => `${c.label}: ${c.parsed}%` } } } }
+                    });
+                }
+
+                // Bar chart top 5
+                const cB = document.getElementById('barChart')?.getContext('2d');
+                if (cB) {
+                    const top5 = [...fv].sort((a, b) => b.views - a.views).slice(0, 5);
+                    charts.bar = new Chart(cB, {
+                        type: 'bar',
+                        data: { labels: top5.map(v => v.title.length > 18 ? v.title.slice(0, 18) + '…' : v.title), datasets: [{ label: 'Views', data: top5.map(v => v.views), backgroundColor: ['#2563eb', '#7c3aed', '#10b981', '#f59e0b', '#ef4444'], borderRadius: 8, barPercentage: 0.65 }] },
+                        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { backgroundColor: '#1e293b', padding: 12, callbacks: { label: c => DB.formatNum(c.parsed.y) + ' views' } } }, scales: { x: { grid: { display: false }, ticks: { color: tickC } }, y: { grid: { color: gridC }, ticks: { color: tickC, callback: v => DB.formatNum(v) } } } }
+                    });
+                }
+
+                // Engagement bar
+                const cE = document.getElementById('engChart')?.getContext('2d');
+                if (cE) {
+                    const k = DB.calcKPIs(fv);
+                    charts.eng = new Chart(cE, {
+                        type: 'bar',
+                        data: { labels: ['Likes', 'Comments', 'Shares'], datasets: [{ label: 'Count', data: [k.totalLikes, k.totalComments, k.totalShares], backgroundColor: ['#10b981', '#2563eb', '#f59e0b'], borderRadius: 8, barPercentage: 0.5 }] },
+                        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { backgroundColor: '#1e293b', callbacks: { label: c => DB.formatNum(c.parsed.y) } } }, scales: { x: { grid: { display: false }, ticks: { color: tickC } }, y: { grid: { color: gridC }, ticks: { color: tickC, callback: v => DB.formatNum(v) } } } }
+                    });
+                }
+            }
+
+            function updateCharts() {
+                const days = parseInt(tf?.value) || 28;
+                const { labels, data } = DB.getViewsOverTime(fv, Math.min(days, 30));
+                if (charts.growth) { charts.growth.data.labels = labels; charts.growth.data.datasets[0].data = data; charts.growth.update(); }
+                const t = DB.getTrafficAggregates(fv);
+                if (charts.traffic) { charts.traffic.data.datasets[0].data = [t.search, t.suggested, t.direct, t.external]; charts.traffic.update(); }
+                const top5 = [...fv].sort((a, b) => b.views - a.views).slice(0, 5);
+                if (charts.bar) { charts.bar.data.labels = top5.map(v => v.title.length > 18 ? v.title.slice(0, 18) + '…' : v.title); charts.bar.data.datasets[0].data = top5.map(v => v.views); charts.bar.update(); }
+                const k = DB.calcKPIs(fv);
+                if (charts.eng) { charts.eng.data.datasets[0].data = [k.totalLikes, k.totalComments, k.totalShares]; charts.eng.update(); }
+            }
+
+            function renderInsights() {
+                const el = document.getElementById('perf-insights');
+                if (!el || !fv.length) return;
+                const top = DB.getTopVideo(fv);
+                const bot = DB.getLeastVideo(fv);
+                el.innerHTML = `
+            <div class="insight-card glass-glow">
+                <div class="insight-header"><i class="fa-solid fa-trophy highlight-gold"></i><h3>Top Performing</h3></div>
+                <div class="insight-content">
+                    <div class="insight-video-info">
+                        <img src="${top.thumbnail}" class="insight-thumb" onerror="this.src='https://via.placeholder.com/120x68'">
+                        <div><h4>${top.title}</h4><p class="text-muted" style="font-size:.82rem">${top.uploadDate}</p></div>
+                    </div>
+                    <div class="insight-metrics">
+                        <div class="metric"><span class="label">Views</span><span class="value">${DB.formatNum(top.views)}</span></div>
+                        <div class="metric"><span class="label">Engagement</span><span class="value">${(((top.likes + top.comments) / top.views) * 100).toFixed(1)}%</span></div>
+                        <div class="metric"><span class="label">Revenue</span><span class="value">${DB.formatCurrency(Math.floor(top.revenue))}</span></div>
+                    </div>
+                </div>
+            </div>
+            <div class="insight-card glass-glow">
+                <div class="insight-header"><i class="fa-solid fa-circle-exclamation text-danger"></i><h3>Needs Attention</h3></div>
+                <div class="insight-content">
+                    <div class="insight-video-info">
+                        <img src="${bot.thumbnail}" class="insight-thumb" onerror="this.src='https://via.placeholder.com/120x68'">
+                        <div><h4>${bot.title}</h4><p class="text-muted" style="font-size:.82rem">${bot.uploadDate}</p></div>
+                    </div>
+                    <div class="insight-metrics">
+                        <div class="metric"><span class="label">Views</span><span class="value">${DB.formatNum(bot.views)}</span></div>
+                        <div class="metric"><span class="label">CTR</span><span class="value">${bot.ctr}%</span></div>
+                        <div class="metric"><span class="label">Revenue</span><span class="value">${DB.formatCurrency(Math.floor(bot.revenue))}</span></div>
+                    </div>
+                </div>
+            </div>
+        `;
+            }
+
+            function renderRetention() {
+                const el = document.getElementById('retention-grid');
+                if (!el || !fv.length) return;
+                const k = DB.calcKPIs(fv);
+                const completionRate = fv.reduce((s, v) => {
+                    const duration = v.avgViewDuration || 1;
+                    const totalDuration = v.watchTime / Math.max(v.views, 1);
+                    return s + Math.min((duration / Math.max(totalDuration, duration)) * 100, 100);
+                }, 0) / fv.length;
+
+                el.innerHTML = `
+            <div class="ret-item glass-glow">
+                <div class="ret-icon" style="background:rgba(37,99,235,0.1);color:#2563eb"><i class="fa-solid fa-clock"></i></div>
+                <div><div class="ret-val">${k.avgDuration} min</div><div class="ret-label">Avg View Duration</div></div>
+            </div>
+            <div class="ret-item glass-glow">
+                <div class="ret-icon" style="background:rgba(16,185,129,0.1);color:#10b981"><i class="fa-solid fa-check-circle"></i></div>
+                <div><div class="ret-val">${completionRate.toFixed(0)}%</div><div class="ret-label">Completion Rate</div></div>
+            </div>
+            <div class="ret-item glass-glow">
+                <div class="ret-icon" style="background:rgba(245,158,11,0.1);color:#f59e0b"><i class="fa-solid fa-chart-line"></i></div>
+                <div><div class="ret-val">${k.avgCTR}%</div><div class="ret-label">Avg Click-Through Rate</div></div>
+            </div>
+            <div class="ret-item glass-glow">
+                <div class="ret-icon" style="background:rgba(239,68,68,0.1);color:#ef4444"><i class="fa-solid fa-arrow-trend-down"></i></div>
+                <div><div class="ret-val">${(100 - completionRate).toFixed(0)}%</div><div class="ret-label">Drop-off Rate</div></div>
+            </div>
+        `;
+            }
+
+            document.getElementById('export-btn')?.addEventListener('click', () => {
+                const blob = new Blob([JSON.stringify({ kpis: DB.calcKPIs(fv), videos: fv }, null, 2)], { type: 'application/json' });
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(blob);
+                a.download = `analytics_${Date.now()}.json`;
+                a.click();
+            });
+
+            document.addEventListener('themeChanged', ({ detail: { isDark } }) => {
+                const g = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(100,116,139,0.1)';
+                const t = isDark ? '#94a3b8' : '#64748b';
+                Object.values(charts).forEach(c => {
+                    if (c.options.scales) {
+                        if (c.options.scales.x?.ticks) c.options.scales.x.ticks.color = t;
+                        if (c.options.scales.y?.ticks) c.options.scales.y.ticks.color = t;
+                        if (c.options.scales.y?.grid) c.options.scales.y.grid.color = g;
+                    }
+                    if (c.options.plugins?.legend?.labels) c.options.plugins.legend.labels.color = t;
+                    c.update();
+                });
+            });
+
+            renderKPIs();
+            initCharts();
+            renderInsights();
+            renderRetention();
+        });
+    </script>
+</body>
+
+</html>
