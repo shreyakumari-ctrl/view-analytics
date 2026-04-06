@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About – MyTube Studio</title>
+    <meta name="description" content="Learn more about MyTube Studio - a creator-centric analytics dashboard.">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <div class="app-container">
+
+        <!-- ░░ NAVBAR ░░ -->
+        <nav class="navbar">
+            <div class="nav-left">
+                <button id="sidebar-toggle" class="icon-btn" aria-label="Toggle sidebar">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <div class="logo">
+                    <i class="fa-brands fa-youtube color-primary"></i>
+                    <span>MyTube Studio</span>
+                </div>
+            </div>
+            <div class="nav-center">
+                <div class="search-bar">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="global-search" placeholder="Search videos, analytics…">
+                </div>
+            </div>
+            <div class="nav-right">
+                <button id="theme-toggle" class="icon-btn" aria-label="Toggle theme">
+                    <i class="fa-regular fa-moon"></i>
+                </button>
+                <div class="notification" style="position:relative">
+                    <button id="notif-btn" class="icon-btn" aria-label="Notifications">
+                        <i class="fa-regular fa-bell"></i>
+                    </button>
+                    <span class="badge" id="notif-badge">3</span>
+                    <div class="notif-panel" id="notif-panel">
+                        <div class="notif-header">
+                            <h4>Notifications</h4>
+                            <button id="mark-all-read" class="btn-text-sm">Mark all read</button>
+                        </div>
+                        <div class="notif-list" id="notif-list"></div>
+                    </div>
+                </div>
+                <div class="user-menu-wrap">
+                    <img src="https://i.pravatar.cc/150?img=47" alt="Profile" class="avatar" id="nav-avatar">
+                    <div class="user-tooltip">
+                        <strong id="nav-username">Loading…</strong>
+                        <span id="nav-channel"></span>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <div class="main-layout">
+            <!-- ░░ SIDEBAR ░░ -->
+            <aside class="sidebar" id="sidebar">
+                <div class="nav-links">
+                    <a href="index.html" class="nav-link">
+                        <i class="fa-solid fa-house"></i><span>Dashboard</span>
+                    </a>
+                    <a href="videos.html" class="nav-link">
+                        <i class="fa-solid fa-video"></i><span>Videos</span>
+                    </a>
+                    <a href="videos.html?tab=shorts" class="nav-link">
+                        <i class="fa-brands fa-tiktok"></i><span>Shorts</span>
+                    </a>
+                    <a href="analytics.html" class="nav-link">
+                        <i class="fa-solid fa-chart-simple"></i><span>Analytics</span>
+                    </a>
+                    <a href="audience.html" class="nav-link">
+                        <i class="fa-solid fa-users"></i><span>Audience</span>
+                    </a>
+                    <a href="monetization.html" class="nav-link">
+                        <i class="fa-solid fa-sack-dollar"></i><span>Monetization</span>
+                    </a>
+                    <div class="divider"></div>
+                    <a href="about.html" class="nav-link active">
+                        <i class="fa-solid fa-circle-info"></i><span>About</span>
+                    </a>
+                    <a href="settings.html" class="nav-link">
+                        <i class="fa-solid fa-gear"></i><span>Settings</span>
+                    </a>
+                    <a href="#" class="nav-link text-danger logout-btn">
+                        <i class="fa-solid fa-arrow-right-from-bracket"></i><span>Logout</span>
+                    </a>
+                </div>
+            </aside>
+
+            <!-- ░░ CONTENT ░░ -->
+            <main class="content" id="main-content">
+
+                <!-- Header -->
+                <div class="content-header page-header-flex">
+                    <h1>About MyTube Studio</h1>
+                    <p class="text-muted">Learn more about our mission and vision</p>
+                </div>
+
+                <!-- About Content -->
+                <div class="card">
+                    <div class="card-body">
+                        <section class="about-section">
+                            <div class="about-hero">
+                                <i class="fa-brands fa-youtube"></i>
+                                <h2>MyTube Studio</h2>
+                                <p class="lead">A creator-centric analytics dashboard designed to empower content creators with actionable insights into their channel performance.</p>
+                            </div>
+
+                            <div class="about-intro">
+                                <p>Built as a modern web application, MyTube Studio provides an intuitive interface for monitoring views, engagement, revenue, and audience growth. We believe every creator deserves access to powerful analytics tools that help them understand their audience and grow their channels.</p>
+                            </div>
+                        </section>
+
+                        <!-- Mission Section -->
+                        <section class="about-section">
+                            <div class="section-header">
+                                <i class="fa-solid fa-bullseye color-primary"></i>
+                                <h3>Our Mission</h3>
+                            </div>
+                            <p>To democratize analytics for creators by providing an easily accessible, feature-rich platform that helps content creators make data-driven decisions and grow their channels.</p>
+                        </section>
+
+                        <!-- Why Section -->
+                        <section class="about-section">
+                            <div class="section-header">
+                                <i class="fa-solid fa-star color-primary"></i>
+                                <h3>Why MyTube Studio?</h3>
+                            </div>
+                            <div class="features-grid">
+                                <div class="feature-card">
+                                    <div class="feature-icon">
+                                        <i class="fa-solid fa-lightning-bolt"></i>
+                                    </div>
+                                    <h4>Real-time Insights</h4>
+                                    <p>Track your performance metrics as they happen with live data updates and instant notifications.</p>
+                                </div>
+                                <div class="feature-card">
+                                    <div class="feature-icon">
+                                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+                                    </div>
+                                    <h4>User-Friendly Interface</h4>
+                                    <p>Intuitive design inspired by industry-leading analytics platforms for seamless navigation.</p>
+                                </div>
+                                <div class="feature-card">
+                                    <div class="feature-icon">
+                                        <i class="fa-solid fa-chart-line"></i>
+                                    </div>
+                                    <h4>Comprehensive Analytics</h4>
+                                    <p>From basic metrics to advanced audience insights, get everything you need in one place.</p>
+                                </div>
+                                <div class="feature-card">
+                                    <div class="feature-icon">
+                                        <i class="fa-solid fa-shield"></i>
+                                    </div>
+                                    <h4>Privacy-Focused</h4>
+                                    <p>Your data stays with you. We prioritize your privacy and data security.</p>
+                                </div>
+                                <div class="feature-card">
+                                    <div class="feature-icon">
+                                        <i class="fa-solid fa-spinner"></i>
+                                    </div>
+                                    <h4>Always Improving</h4>
+                                    <p>Actively developed with creator feedback to continuously enhance the experience.</p>
+                                </div>
+                                <div class="feature-card">
+                                    <div class="feature-icon">
+                                        <i class="fa-solid fa-code"></i>
+                                    </div>
+                                    <h4>Open Source</h4>
+                                    <p>Built on open-source principles, customizable and transparent for community contributions.</p>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Who Section -->
+                        <section class="about-section">
+                            <div class="section-header">
+                                <i class="fa-solid fa-people-group color-primary"></i>
+                                <h3>Who Is It For?</h3>
+                            </div>
+                            <ul class="about-list">
+                                <li><strong>YouTubers and content creators</strong> – Whether you create music, gaming, education, or lifestyle content</li>
+                                <li><strong>Small to medium-sized channels</strong> – Perfect for growing creators with 1K to 1M subscribers</li>
+                                <li><strong>Creators looking for detailed analytics insights</strong> – Go beyond basic YouTube Studio analytics</li>
+                                <li><strong>Anyone wanting a centralized dashboard</strong> – Manage all your content metrics in one place</li>
+                                <li><strong>Developers and learners</strong> – Study clean code and modern web development practices</li>
+                            </ul>
+                        </section>
+
+                        <!-- Stats Section -->
+                        <section class="about-section">
+                            <div class="section-header">
+                                <i class="fa-solid fa-database color-primary"></i>
+                                <h3>By The Numbers</h3>
+                            </div>
+                            <div class="stats-grid">
+                                <div class="stat-card">
+                                    <div class="stat-number">7</div>
+                                    <div class="stat-label">Dashboard Pages</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-number">20+</div>
+                                    <div class="stat-label">Key Metrics Tracked</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-number">100%</div>
+                                    <div class="stat-label">Open Source</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-number">Free</div>
+                                    <div class="stat-label">Forever</div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Technology Section -->
+                        <section class="about-section">
+                            <div class="section-header">
+                                <i class="fa-solid fa-gears color-primary"></i>
+                                <h3>Built With Modern Technologies</h3>
+                            </div>
+                            <div class="tech-list">
+                                <div class="tech-item">
+                                    <strong>Frontend:</strong> HTML5, CSS3, JavaScript
+                                </div>
+                                <div class="tech-item">
+                                    <strong>Visualization:</strong> Chart.js for interactive charts
+                                </div>
+                                <div class="tech-item">
+                                    <strong>Icons:</strong> Font Awesome 6.4
+                                </div>
+                                <div class="tech-item">
+                                    <strong>Typography:</strong> Google Fonts (Poppins)
+                                </div>
+                                <div class="tech-item">
+                                    <strong>Data:</strong> Local Storage API for client-side persistence
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- CTA Section -->
+                        <section class="about-section about-cta">
+                            <h3>Ready to Get Started?</h3>
+                            <p>Join thousands of creators using MyTube Studio to understand their audience better.</p>
+                            <div class="button-group">
+                                <a href="index.html" class="btn btn-primary">
+                                    <i class="fa-solid fa-arrow-right"></i> Go to Dashboard
+                                </a>
+                                <a href="https://github.com/shreyakumari-ctrl/view-analytics" target="_blank" class="btn btn-secondary">
+                                    <i class="fa-brands fa-github"></i> View on GitHub
+                                </a>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+
+                <!-- Footer -->
+                <footer class="page-footer">
+                    <p>Made with <i class="fa-solid fa-heart text-danger"></i> for content creators</p>
+                    <p>© 2024 MyTube Studio. All rights reserved.</p>
+                </footer>
+
+            </main>
+        </div>
+    </div>
+
+    <script src="js/script.js"></script>
+</body>
+
+</html>
